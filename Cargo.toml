@@ -9,4 +9,5 @@ edition = "2021"
 base16ct = { version = "0.2.0" }
 base64ct = { version = "1.6.0", features = ["alloc"] }
 hex = { version = "0.4.3" }
+sha1 = { version = "0.10.5" }
 sha2 = { version = "0.10.7" }
