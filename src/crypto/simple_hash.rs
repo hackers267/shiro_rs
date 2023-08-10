@@ -6,17 +6,41 @@ use sha1::Sha1;
 use sha2::Digest;
 use sha2::Sha256;
 
+/// TODO: 添加以下算法支持：
+/// - [ ] MD2
+/// - [x] MD5
+/// - [x] SHA1
+/// - [ ] SHA-224
+/// - [x] SHA-256
+/// - [ ] SHA-384
+/// - [ ] SHA-512
 pub enum Algorithm {
     SHA256,
     SHA1,
     MD5,
 }
 
+/// 简单哈希算法,支持以下算法：
+/// - MD2
+/// - MD5
+/// - SHA1
+/// - SHA-224
+/// - SHA-256
+/// - SHA-384
+/// - SHA-512
 pub struct SimpleHash {
     value: Vec<u8>,
 }
 
 impl SimpleHash {
+    /// 根据指定算法和源字符串构建一个SImpleHash struct
+    ///
+    /// # Arguments
+    /// - `algorithm`: 算法
+    /// - `source`: 源字符串
+    ///
+    /// # 返回值:
+    /// 一个SimpleHash struct
     pub fn simple(algorithm: Algorithm, source: &str) -> Self {
         match algorithm {
             Algorithm::SHA256 => {
@@ -40,6 +64,16 @@ impl SimpleHash {
             }
         }
     }
+
+    /// 根据指定算法和源字符串及盐构建一个SImpleHash struct
+    ///
+    /// # Arguments
+    /// - `algorithm`: 算法
+    /// - `source`: 源字符串
+    /// - `salt`: 盐
+    ///
+    /// # 返回值:
+    /// 一个SimpleHash struct
     pub fn with_salt(algorithm: Algorithm, source: &str, salt: &str) -> Self {
         match algorithm {
             Algorithm::SHA256 => {
@@ -71,6 +105,16 @@ impl SimpleHash {
         }
     }
 
+    /// 根据指定算法和源字符串及盐与迭代次数构建一个SImpleHash struct
+    ///
+    /// # Arguments
+    /// - `algorithm`: 算法
+    /// - `source`: 源字符串
+    /// - `salt`: 盐
+    /// - `times`: 迭代次数
+    ///
+    /// # 返回值:
+    /// 一个SimpleHash struct
     pub fn with_salt_iter(algorithm: Algorithm, source: &str, salt: &str, times: usize) -> Self {
         match algorithm {
             Algorithm::SHA256 => {
@@ -121,13 +165,29 @@ impl SimpleHash {
             }
         }
     }
+}
 
-    pub fn to_hex(&self) -> String {
-        encode(&self.value)
-    }
+pub trait ToBase64 {
+    /// 转换为base64字符串
+    fn to_base64(&self) -> String;
+}
 
-    pub fn to_base64(&self) -> String {
+pub trait ToHex {
+    /// 转换为16进制字符串
+    fn to_hex(&self) -> String;
+}
+
+impl ToBase64 for SimpleHash {
+    /// 把SimpleHash的内部值转换为base64字符串
+    fn to_base64(&self) -> String {
         Base64::encode_string(&self.value)
+    }
+}
+
+impl ToHex for SimpleHash {
+    /// 把SimpleHash的内部值转换为16进制字符串
+    fn to_hex(&self) -> String {
+        encode(&self.value)
     }
 }
 
