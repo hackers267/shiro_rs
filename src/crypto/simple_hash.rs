@@ -7,6 +7,7 @@ use sha1::Sha1;
 use sha2::Digest;
 use sha2::Sha224;
 use sha2::Sha256;
+use sha2::Sha384;
 
 /// TODO: 添加以下算法支持：
 /// - [x] MD2
@@ -14,7 +15,7 @@ use sha2::Sha256;
 /// - [x] SHA1
 /// - [x] SHA-224
 /// - [x] SHA-256
-/// - [ ] SHA-384
+/// - [x] SHA-384
 /// - [ ] SHA-512
 pub enum Algorithm {
     MD2,
@@ -22,6 +23,7 @@ pub enum Algorithm {
     SHA1,
     SHA224,
     SHA256,
+    SHA384,
 }
 
 /// 简单哈希算法,支持以下算法：
@@ -68,6 +70,13 @@ impl SimpleHash {
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
+            Algorithm::SHA384 => {
+                let mut hasher = Sha384::new();
+                hasher.update(source);
+                let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
             Algorithm::MD5 => {
                 let result = md5::compute(source);
                 let value = result.as_slice().to_vec();
@@ -96,6 +105,15 @@ impl SimpleHash {
         match algorithm {
             Algorithm::SHA256 => {
                 let mut hasher = Sha256::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::SHA384 => {
+                let mut hasher = Sha384::new();
                 hasher.reset();
                 hasher.update(salt);
                 hasher.update(source);
@@ -162,6 +180,22 @@ impl SimpleHash {
                 let range = 1..times;
                 for _i in range {
                     let mut hasher = Sha256::new();
+                    hasher.reset();
+                    hasher.update(hashed);
+                    hashed = hasher.finalize();
+                }
+                let value = hashed.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::SHA384 => {
+                let mut hasher = Sha384::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let mut hashed = hasher.finalize();
+                let range = 1..times;
+                for _i in range {
+                    let mut hasher = Sha384::new();
                     hasher.reset();
                     hasher.update(hashed);
                     hashed = hasher.finalize();
