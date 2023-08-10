@@ -1,6 +1,7 @@
 use base64ct::Base64;
 use base64ct::Encoding;
 use hex::encode;
+use md5::Context;
 use sha1::Sha1;
 use sha2::Digest;
 use sha2::Sha256;
@@ -8,6 +9,7 @@ use sha2::Sha256;
 pub enum Algorithm {
     SHA256,
     SHA1,
+    MD5,
 }
 
 pub struct SimpleHash {
@@ -31,6 +33,11 @@ impl SimpleHash {
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
+            Algorithm::MD5 => {
+                let result = md5::compute(source);
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
         }
     }
     pub fn with_salt(algorithm: Algorithm, source: &str, salt: &str) -> Self {
@@ -50,6 +57,14 @@ impl SimpleHash {
                 hasher.update(salt);
                 hasher.update(source);
                 let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::MD5 => {
+                let mut context = Context::new();
+                context.consume(salt);
+                context.consume(source);
+                let result = context.compute();
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
@@ -88,6 +103,20 @@ impl SimpleHash {
                     hashed = hasher.finalize();
                 }
                 let value = hashed.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::MD5 => {
+                let mut context = Context::new();
+                context.consume(salt);
+                context.consume(source);
+                let mut hashed = context.compute();
+                let range = 1..times;
+                for _i in range {
+                    let mut context = Context::new();
+                    context.consume(hashed.as_slice());
+                    hashed = context.compute();
+                }
+                let value = hashed.to_vec();
                 Self { value }
             }
         }
@@ -176,5 +205,28 @@ mod tests {
         assert_eq!(result, "b8b8921827b021bdad0f5ded29c5b7404e1156d3");
         let result = SimpleHash::with_salt_iter(Algorithm::SHA1, source, salt, 10).to_base64();
         assert_eq!(result, "uLiSGCewIb2tD13tKcW3QE4RVtM=");
+    }
+
+    #[test]
+    fn simple_hash_md5_test() {
+        let source = "admin";
+        let result = SimpleHash::simple(Algorithm::MD5, source).to_string();
+        assert_eq!(result, "21232f297a57a5a743894a0e4a801fc3");
+    }
+
+    #[test]
+    fn simple_hash_salt_md5_test() {
+        let source = "admin";
+        let salt = "123456";
+        let result = SimpleHash::with_salt(Algorithm::MD5, source, salt).to_string();
+        assert_eq!(result, "b9d11b3be25f5a1a7dc8ca04cd310b28");
+    }
+
+    #[test]
+    fn simple_hash_salt_iter_md5_test() {
+        let source = "admin";
+        let salt = "123456";
+        let result = SimpleHash::with_salt_iter(Algorithm::MD5, source, salt, 10).to_string();
+        assert_eq!(result, "c2e27b84e96213b20c4a59b40286868b")
     }
 }
