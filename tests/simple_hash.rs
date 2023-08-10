@@ -74,16 +74,17 @@ mod sha1_test {
     }
 }
 
-/// TODO: 添加to_base64测试
 #[cfg(test)]
 mod md5_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash};
+    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
 
     #[test]
     fn simple_hash_test() {
         let source = "admin";
         let result = SimpleHash::simple(Algorithm::MD5, source).to_string();
         assert_eq!(result, "21232f297a57a5a743894a0e4a801fc3");
+        let result = SimpleHash::simple(Algorithm::MD5, source).to_base64();
+        assert_eq!(result, "ISMvKXpXpadDiUoOSoAfww==")
     }
 
     #[test]
@@ -92,6 +93,8 @@ mod md5_test {
         let salt = "123456";
         let result = SimpleHash::with_salt(Algorithm::MD5, source, salt).to_string();
         assert_eq!(result, "b9d11b3be25f5a1a7dc8ca04cd310b28");
+        let result = SimpleHash::with_salt(Algorithm::MD5, source, salt).to_base64();
+        assert_eq!(result, "udEbO+JfWhp9yMoEzTELKA==");
     }
 
     #[test]
@@ -99,20 +102,23 @@ mod md5_test {
         let source = "admin";
         let salt = "123456";
         let result = SimpleHash::with_salt_iter(Algorithm::MD5, source, salt, 10).to_string();
-        assert_eq!(result, "c2e27b84e96213b20c4a59b40286868b")
+        assert_eq!(result, "c2e27b84e96213b20c4a59b40286868b");
+        let result = SimpleHash::with_salt_iter(Algorithm::MD5, source, salt, 10).to_base64();
+        assert_eq!(result, "wuJ7hOliE7IMSlm0AoaGiw==");
     }
 }
 
-/// TODO: 添加to_base64测试
 #[cfg(test)]
 mod md2_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash};
+    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
 
     #[test]
     fn simple_hash_test() {
         let source = "admin";
         let result = SimpleHash::simple(Algorithm::MD2, source).to_string();
         assert_eq!(result, "3e3e6b0e5c1c68644fc5ce3cf060211d");
+        let result = SimpleHash::simple(Algorithm::MD2, source).to_base64();
+        assert_eq!(result, "Pj5rDlwcaGRPxc488GAhHQ==");
     }
 
     #[test]
@@ -121,6 +127,8 @@ mod md2_test {
         let salt = "123456";
         let result = SimpleHash::with_salt(Algorithm::MD2, source, salt).to_string();
         assert_eq!(result, "bf9327c0436f03d8233304ec588725cf");
+        let result = SimpleHash::with_salt(Algorithm::MD2, source, salt).to_base64();
+        assert_eq!(result, "v5MnwENvA9gjMwTsWIclzw==");
     }
 
     #[test]
@@ -128,7 +136,9 @@ mod md2_test {
         let source = "admin";
         let salt = "123456";
         let result = SimpleHash::with_salt_iter(Algorithm::MD2, source, salt, 10).to_string();
-        assert_eq!(result, "0ca3668884ab55d127f479fc1655e576")
+        assert_eq!(result, "0ca3668884ab55d127f479fc1655e576");
+        let result = SimpleHash::with_salt_iter(Algorithm::MD2, source, salt, 10).to_base64();
+        assert_eq!(result, "DKNmiISrVdEn9Hn8FlXldg==");
     }
 }
 #[cfg(test)]
