@@ -1,3 +1,4 @@
+//! 允许使用多个指定算法名称的哈希实现。
 use base64ct::{Base64, Encoding};
 use hex::encode;
 use md2::Md2;
@@ -5,6 +6,7 @@ use md5::Context;
 use sha1::Sha1;
 use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 
+/// SimpleHash支持的算法
 pub enum Algorithm {
     MD2,
     MD5,
@@ -15,7 +17,7 @@ pub enum Algorithm {
     SHA512,
 }
 
-/// 简单哈希算法,支持以下算法：
+/// 简单哈希算法
 /// - MD2
 /// - MD5
 /// - SHA1
