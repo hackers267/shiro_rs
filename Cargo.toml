@@ -11,7 +11,7 @@ description = "Apache Shiro 的Rust实现"
 base16ct = { version = "0.2.0" }
 base64ct = { version = "1.6.0", features = ["alloc"] }
 hex = { version = "0.4.3" }
+md-5 = { version = "0.10.5" }
 md2 = { version = "0.10.2" }
-md5 = { version = "0.7.0" }
 sha1 = { version = "0.10.5" }
 sha2 = { version = "0.10.7" }

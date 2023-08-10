@@ -2,7 +2,7 @@
 use base64ct::{Base64, Encoding};
 use hex::encode;
 use md2::Md2;
-use md5::Context;
+use md5::Md5;
 use sha1::Sha1;
 use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 
@@ -76,7 +76,9 @@ impl SimpleHash {
                 Self { value }
             }
             Algorithm::MD5 => {
-                let result = md5::compute(source);
+                let mut hasher = Md5::new();
+                hasher.update(source);
+                let result = hasher.finalize();
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
@@ -147,10 +149,11 @@ impl SimpleHash {
                 Self { value }
             }
             Algorithm::MD5 => {
-                let mut context = Context::new();
-                context.consume(salt);
-                context.consume(source);
-                let result = context.compute();
+                let mut hasher = Md5::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let result = hasher.finalize();
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
@@ -275,17 +278,19 @@ impl SimpleHash {
                 Self { value }
             }
             Algorithm::MD5 => {
-                let mut context = Context::new();
-                context.consume(salt);
-                context.consume(source);
-                let mut hashed = context.compute();
+                let mut hasher = Md5::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let mut hashed = hasher.finalize();
                 let range = 1..times;
                 for _i in range {
-                    let mut context = Context::new();
-                    context.consume(hashed.as_slice());
-                    hashed = context.compute();
+                    let mut hasher = Md5::new();
+                    hasher.reset();
+                    hasher.update(hashed);
+                    hashed = hasher.finalize();
                 }
-                let value = hashed.to_vec();
+                let value = hashed.as_slice().to_vec();
                 Self { value }
             }
         }
