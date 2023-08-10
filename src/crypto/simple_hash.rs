@@ -5,13 +5,14 @@ use md2::Md2;
 use md5::Context;
 use sha1::Sha1;
 use sha2::Digest;
+use sha2::Sha224;
 use sha2::Sha256;
 
 /// TODO: 添加以下算法支持：
 /// - [x] MD2
 /// - [x] MD5
 /// - [x] SHA1
-/// - [ ] SHA-224
+/// - [x] SHA-224
 /// - [x] SHA-256
 /// - [ ] SHA-384
 /// - [ ] SHA-512
@@ -19,6 +20,7 @@ pub enum Algorithm {
     MD2,
     MD5,
     SHA1,
+    SHA224,
     SHA256,
 }
 
@@ -59,6 +61,13 @@ impl SimpleHash {
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
+            Algorithm::SHA224 => {
+                let mut hasher = Sha224::new();
+                hasher.update(source);
+                let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
             Algorithm::MD5 => {
                 let result = md5::compute(source);
                 let value = result.as_slice().to_vec();
@@ -87,6 +96,15 @@ impl SimpleHash {
         match algorithm {
             Algorithm::SHA256 => {
                 let mut hasher = Sha256::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::SHA224 => {
+                let mut hasher = Sha224::new();
                 hasher.reset();
                 hasher.update(salt);
                 hasher.update(source);
@@ -144,6 +162,22 @@ impl SimpleHash {
                 let range = 1..times;
                 for _i in range {
                     let mut hasher = Sha256::new();
+                    hasher.reset();
+                    hasher.update(hashed);
+                    hashed = hasher.finalize();
+                }
+                let value = hashed.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::SHA224 => {
+                let mut hasher = Sha224::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let mut hashed = hasher.finalize();
+                let range = 1..times;
+                for _i in range {
+                    let mut hasher = Sha224::new();
                     hasher.reset();
                     hasher.update(hashed);
                     hashed = hasher.finalize();
