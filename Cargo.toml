@@ -3,6 +3,7 @@ name = "shiro"
 version = "0.0.1"
 edition = "2021"
 license = "MIT"
+repository = "https://github.com/hackers267/shiro_rs"
 description = "Apache Shiro 的Rust实现"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
