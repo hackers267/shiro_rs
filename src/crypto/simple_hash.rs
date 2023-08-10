@@ -1,22 +1,10 @@
-use base64ct::Base64;
-use base64ct::Encoding;
+use base64ct::{Base64, Encoding};
 use hex::encode;
 use md2::Md2;
 use md5::Context;
 use sha1::Sha1;
-use sha2::Digest;
-use sha2::Sha224;
-use sha2::Sha256;
-use sha2::Sha384;
+use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 
-/// TODO: 添加以下算法支持：
-/// - [x] MD2
-/// - [x] MD5
-/// - [x] SHA1
-/// - [x] SHA-224
-/// - [x] SHA-256
-/// - [x] SHA-384
-/// - [ ] SHA-512
 pub enum Algorithm {
     MD2,
     MD5,
@@ -24,6 +12,7 @@ pub enum Algorithm {
     SHA224,
     SHA256,
     SHA384,
+    SHA512,
 }
 
 /// 简单哈希算法,支持以下算法：
@@ -77,6 +66,13 @@ impl SimpleHash {
                 let value = result.as_slice().to_vec();
                 Self { value }
             }
+            Algorithm::SHA512 => {
+                let mut hasher = Sha512::new();
+                hasher.update(source);
+                let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
             Algorithm::MD5 => {
                 let result = md5::compute(source);
                 let value = result.as_slice().to_vec();
@@ -114,6 +110,15 @@ impl SimpleHash {
             }
             Algorithm::SHA384 => {
                 let mut hasher = Sha384::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let result = hasher.finalize();
+                let value = result.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::SHA512 => {
+                let mut hasher = Sha512::new();
                 hasher.reset();
                 hasher.update(salt);
                 hasher.update(source);
@@ -196,6 +201,22 @@ impl SimpleHash {
                 let range = 1..times;
                 for _i in range {
                     let mut hasher = Sha384::new();
+                    hasher.reset();
+                    hasher.update(hashed);
+                    hashed = hasher.finalize();
+                }
+                let value = hashed.as_slice().to_vec();
+                Self { value }
+            }
+            Algorithm::SHA512 => {
+                let mut hasher = Sha512::new();
+                hasher.reset();
+                hasher.update(salt);
+                hasher.update(source);
+                let mut hashed = hasher.finalize();
+                let range = 1..times;
+                for _i in range {
+                    let mut hasher = Sha512::new();
                     hasher.reset();
                     hasher.update(hashed);
                     hashed = hasher.finalize();

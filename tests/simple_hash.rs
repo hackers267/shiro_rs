@@ -226,3 +226,37 @@ mod sha384_test {
         );
     }
 }
+
+#[cfg(test)]
+mod sha512_test {
+    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+
+    #[test]
+    fn simple_hash_test() {
+        let source = "admin";
+        let result = SimpleHash::simple(Algorithm::SHA512, source).to_string();
+        assert_eq!(result, "c7ad44cbad762a5da0a452f9e854fdc1e0e7a52a38015f23f3eab1d80b931dd472634dfac71cd34ebc35d16ab7fb8a90c81f975113d6c7538dc69dd8de9077ec");
+        let result = SimpleHash::simple(Algorithm::SHA512, source).to_base64();
+        assert_eq!(result, "x61Ey612Kl2gpFL56FT9weDnpSo4AV8j8+qx2AuTHdRyY036xxzTTrw10Wq3+4qQyB+XURPWx1ONxp3Y3pB37A==");
+    }
+
+    #[test]
+    fn simple_hash_salt_test() {
+        let source = "admin";
+        let salt = "123456";
+        let result = SimpleHash::with_salt(Algorithm::SHA512, source, salt).to_string();
+        assert_eq!(result, "fae0e84f4db7291b518b3b7d9df1932b0235d64f418c949d93b1a9fbab35b66e243069c0d19823086661efd3213830a5f891e6dac5c53a6d7638b768fb3f289b");
+        let result = SimpleHash::with_salt(Algorithm::SHA512, source, salt).to_base64();
+        assert_eq!(result, "+uDoT023KRtRizt9nfGTKwI11k9BjJSdk7Gp+6s1tm4kMGnA0ZgjCGZh79MhODCl+JHm2sXFOm12OLdo+z8omw==");
+    }
+
+    #[test]
+    fn simple_hash_salt_iter_test() {
+        let source = "admin";
+        let salt = "123456";
+        let result = SimpleHash::with_salt_iter(Algorithm::SHA512, source, salt, 10).to_string();
+        assert_eq!(result, "1208cd7444c810f2c96f58e412e69b492a4c2878480a942543ab92241eb61bd2e8c5eca968a43298e3ccd016d3e96c4c9d7d9b5b16a06608fa431eee30914319");
+        let result = SimpleHash::with_salt_iter(Algorithm::SHA512, source, salt, 10).to_base64();
+        assert_eq!(result, "EgjNdETIEPLJb1jkEuabSSpMKHhICpQlQ6uSJB62G9LoxeypaKQymOPM0BbT6WxMnX2bWxagZgj6Qx7uMJFDGQ==");
+    }
+}
