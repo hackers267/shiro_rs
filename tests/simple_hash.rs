@@ -74,6 +74,7 @@ mod sha1_test {
     }
 }
 
+/// TODO: 添加to_base64测试
 #[cfg(test)]
 mod md5_test {
     use shiro::simple_hash::{Algorithm, SimpleHash};
@@ -99,5 +100,33 @@ mod md5_test {
         let salt = "123456";
         let result = SimpleHash::with_salt_iter(Algorithm::MD5, source, salt, 10).to_string();
         assert_eq!(result, "c2e27b84e96213b20c4a59b40286868b")
+    }
+}
+
+#[cfg(test)]
+mod md2_test {
+    use shiro::simple_hash::{Algorithm, SimpleHash};
+
+    #[test]
+    fn simple_hash_test() {
+        let source = "admin";
+        let result = SimpleHash::simple(Algorithm::MD2, source).to_string();
+        assert_eq!(result, "3e3e6b0e5c1c68644fc5ce3cf060211d");
+    }
+
+    #[test]
+    fn simple_hash_salt_test() {
+        let source = "admin";
+        let salt = "123456";
+        let result = SimpleHash::with_salt(Algorithm::MD2, source, salt).to_string();
+        assert_eq!(result, "bf9327c0436f03d8233304ec588725cf");
+    }
+
+    #[test]
+    fn simple_hash_salt_iter_test() {
+        let source = "admin";
+        let salt = "123456";
+        let result = SimpleHash::with_salt_iter(Algorithm::MD2, source, salt, 10).to_string();
+        assert_eq!(result, "0ca3668884ab55d127f479fc1655e576")
     }
 }
