@@ -41,53 +41,32 @@ impl SimpleHash {
     pub fn simple(algorithm: Algorithm, source: &str) -> Self {
         match algorithm {
             Algorithm::SHA256 => {
-                let mut hasher = Sha256::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha256::new();
+                Self::hash_simple(hasher, source)
             }
             Algorithm::SHA1 => {
-                let mut hasher = Sha1::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha1::new();
+                Self::hash_simple(hasher, source)
             }
             Algorithm::SHA224 => {
-                let mut hasher = Sha224::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha224::new();
+                Self::hash_simple(hasher, source)
             }
             Algorithm::SHA384 => {
-                let mut hasher = Sha384::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha384::new();
+                Self::hash_simple(hasher, source)
             }
             Algorithm::SHA512 => {
-                let mut hasher = Sha512::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha512::new();
+                Self::hash_simple(hasher, source)
             }
             Algorithm::MD5 => {
-                let mut hasher = Md5::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Md5::new();
+                Self::hash_simple(hasher, source)
             }
             Algorithm::MD2 => {
-                let mut hasher = Md2::new();
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Md2::new();
+                Self::hash_simple(hasher, source)
             }
         }
     }
@@ -104,67 +83,32 @@ impl SimpleHash {
     pub fn with_salt(algorithm: Algorithm, source: &str, salt: &str) -> Self {
         match algorithm {
             Algorithm::SHA256 => {
-                let mut hasher = Sha256::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha256::new();
+                Self::hash_salt(hasher, source, salt)
             }
             Algorithm::SHA384 => {
-                let mut hasher = Sha384::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha384::new();
+                Self::hash_salt(hasher, source, salt)
             }
             Algorithm::SHA512 => {
-                let mut hasher = Sha512::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha512::new();
+                Self::hash_salt(hasher, source, salt)
             }
             Algorithm::SHA224 => {
-                let mut hasher = Sha224::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha224::new();
+                Self::hash_salt(hasher, source, salt)
             }
             Algorithm::SHA1 => {
-                let mut hasher = Sha1::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha1::new();
+                Self::hash_salt(hasher, source, salt)
             }
             Algorithm::MD5 => {
-                let mut hasher = Md5::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Md5::new();
+                Self::hash_salt(hasher, source, salt)
             }
             Algorithm::MD2 => {
-                let mut hasher = Md2::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let result = hasher.finalize();
-                let value = result.as_slice().to_vec();
-                Self { value }
+                let hasher = Md2::new();
+                Self::hash_salt(hasher, source, salt)
             }
         }
     }
@@ -182,118 +126,76 @@ impl SimpleHash {
     pub fn with_salt_iter(algorithm: Algorithm, source: &str, salt: &str, times: usize) -> Self {
         match algorithm {
             Algorithm::SHA256 => {
-                let mut hasher = Sha256::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Sha256::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha256::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
             Algorithm::SHA384 => {
-                let mut hasher = Sha384::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Sha384::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha384::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
             Algorithm::SHA512 => {
-                let mut hasher = Sha512::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Sha512::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha512::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
             Algorithm::SHA224 => {
-                let mut hasher = Sha224::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Sha224::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha224::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
             Algorithm::SHA1 => {
-                let mut hasher = Sha1::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Sha1::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Sha1::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
             Algorithm::MD2 => {
-                let mut hasher = Md2::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Md2::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Md2::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
             Algorithm::MD5 => {
-                let mut hasher = Md5::new();
-                hasher.reset();
-                hasher.update(salt);
-                hasher.update(source);
-                let mut hashed = hasher.finalize();
-                let range = 1..times;
-                for _i in range {
-                    let mut hasher = Md5::new();
-                    hasher.reset();
-                    hasher.update(hashed);
-                    hashed = hasher.finalize();
-                }
-                let value = hashed.as_slice().to_vec();
-                Self { value }
+                let hasher = Md5::new();
+                Self::hash_salt_iter(hasher, source, salt, times)
             }
         }
+    }
+
+    fn hash<T>(mut hasher: T, source: &str, salt: Option<&str>, times: Option<usize>) -> Self
+    where
+        T: Digest + Clone,
+    {
+        let hasher_bak = hasher.clone();
+        if let Some(salt) = salt {
+            hasher.update(salt);
+        }
+        hasher.update(source);
+        let mut hashed = hasher.finalize();
+        let times = times.unwrap_or(1);
+        let range = 1..times;
+        for _i in range {
+            let mut hasher = hasher_bak.clone();
+            hasher.update(hashed);
+            hashed = hasher.finalize();
+        }
+        let value = hashed.as_slice().to_vec();
+        Self { value }
+    }
+
+    fn hash_salt<T>(hasher: T, source: &str, salt: &str) -> Self
+    where
+        T: Digest + Clone,
+    {
+        Self::hash(hasher, source, Some(salt), None)
+    }
+
+    fn hash_simple<T>(hasher: T, source: &str) -> Self
+    where
+        T: Digest + Clone,
+    {
+        Self::hash(hasher, source, None, None)
+    }
+
+    fn hash_salt_iter<T>(hasher: T, source: &str, salt: &str, times: usize) -> Self
+    where
+        T: Digest + Clone,
+    {
+        Self::hash(hasher, source, Some(salt), Some(times))
     }
 }
 
