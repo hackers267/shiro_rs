@@ -4,44 +4,30 @@ use hex::encode;
 use md2::Digest;
 use md2::Md2;
 
-use crate::simple_hash::Algorithm;
-use crate::simple_hash::SimpleHash;
 use crate::simple_hash::ToBase64;
 use crate::simple_hash::ToHex;
+
+use super::utils::hash;
 pub struct MD2Hash {
     value: Vec<u8>,
 }
 
 impl MD2Hash {
     pub fn simple(source: &str) -> Self {
-        let mut hasher = Md2::new();
-        hasher.update(source);
-        let value = hasher.finalize();
-        let value = value.to_vec();
+        let hasher = Md2::new();
+        let value = hash(hasher, source, None, None);
         Self { value }
     }
 
     pub fn with_salt(source: &str, salt: &str) -> Self {
-        let mut hasher = Md2::new();
-        hasher.update(salt);
-        hasher.update(source);
-        let value = hasher.finalize();
-        let value = value.to_vec();
+        let hasher = Md2::new();
+        let value = hash(hasher, source, Some(salt), None);
         Self { value }
     }
 
     pub fn with_salt_iter(source: &str, salt: &str, times: usize) -> Self {
-        let mut hasher = Md2::new();
-        hasher.update(salt);
-        hasher.update(source);
-        let mut hashed = hasher.finalize();
-        let range = 1..times;
-        for _i in range {
-            let mut hasher = Md2::new();
-            hasher.update(hashed);
-            hashed = hasher.finalize();
-        }
-        let value = hashed.to_vec();
+        let hasher = Md2::new();
+        let value = hash(hasher, source, Some(salt), Some(times));
         Self { value }
     }
 }
