@@ -1,15 +1,11 @@
-use base64ct::Base64;
-use base64ct::Encoding;
-use hex::decode;
-use hex::encode;
-use md2::Digest;
-use md2::Md2;
+use base64ct::{Base64, Encoding};
+use hex::{decode, encode};
+use md2::{Digest, Md2};
 
-use crate::crypto::utils::hash_with_salt;
-use crate::crypto::utils::hash_with_salt_iter;
-use crate::crypto::utils::simple_hash;
-use crate::simple_hash::ToBase64;
-use crate::simple_hash::ToHex;
+use crate::crypto::utils::{hash_with_salt, hash_with_salt_iter, simple_hash};
+use crate::hash::{ToBase64, ToHex};
+
+use super::{FromBase64, FromHex};
 
 pub struct MD2Hash {
     value: Vec<u8>,
@@ -33,16 +29,20 @@ impl MD2Hash {
         let value = hash_with_salt_iter(hasher, source, salt, times);
         Self { value }
     }
+}
 
-    pub fn from_base64(source: &str) -> Result<Self, base64ct::Error> {
+impl FromBase64 for MD2Hash {
+    fn from_base64(source: &str) -> Result<Self, base64ct::Error> {
         const BUF_SIZE: usize = 128;
         let mut dst = [0u8; BUF_SIZE];
         let value = Base64::decode(source, &mut dst)?;
         let value = value.to_vec();
         Ok(Self { value })
     }
+}
 
-    pub fn from_hex(source: &str) -> Result<Self, hex::FromHexError> {
+impl FromHex for MD2Hash {
+    fn from_hex(source: &str) -> Result<Self, hex::FromHexError> {
         let value = decode(source)?;
         Ok(Self { value })
     }

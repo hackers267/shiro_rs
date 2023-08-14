@@ -1,6 +1,6 @@
 #[cfg(test)]
 mod test {
-    use shiro::{hash::MD2Hash, simple_hash::ToBase64};
+    use shiro::hash::{FromBase64, FromHex, MD2Hash, ToBase64};
     #[test]
     fn simple_test() {
         let result = MD2Hash::simple("admin");

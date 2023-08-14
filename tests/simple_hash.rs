@@ -1,6 +1,7 @@
 #[cfg(test)]
 mod sha256_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
     #[test]
     fn simple_hash_test() {
         let source = "admin";
@@ -42,7 +43,8 @@ mod sha256_test {
 
 #[cfg(test)]
 mod sha1_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
 
     #[test]
     fn simple_hash_test() {
@@ -76,7 +78,8 @@ mod sha1_test {
 
 #[cfg(test)]
 mod md5_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
 
     #[test]
     fn simple_hash_test() {
@@ -110,7 +113,8 @@ mod md5_test {
 
 #[cfg(test)]
 mod md2_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
 
     #[test]
     fn simple_hash_test() {
@@ -143,7 +147,8 @@ mod md2_test {
 }
 #[cfg(test)]
 mod sha224_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
 
     #[test]
     fn simple_hash_test() {
@@ -186,7 +191,8 @@ mod sha224_test {
 
 #[cfg(test)]
 mod sha384_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
 
     #[test]
     fn simple_hash_test() {
@@ -229,7 +235,8 @@ mod sha384_test {
 
 #[cfg(test)]
 mod sha512_test {
-    use shiro::simple_hash::{Algorithm, SimpleHash, ToBase64};
+    use shiro::hash::ToBase64;
+    use shiro::simple_hash::{Algorithm, SimpleHash};
 
     #[test]
     fn simple_hash_test() {

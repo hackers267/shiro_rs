@@ -6,6 +6,8 @@ use md5::Md5;
 use sha1::Sha1;
 use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 
+use crate::hash::{ToBase64, ToHex};
+
 use super::utils::{hash_with_salt, hash_with_salt_iter, simple_hash};
 
 /// SimpleHash支持的算法
@@ -181,16 +183,6 @@ impl SimpleHash {
         let value = hash_with_salt_iter(hasher, source, salt, times);
         Self { value }
     }
-}
-
-pub trait ToBase64 {
-    /// 转换为base64字符串
-    fn to_base64(&self) -> String;
-}
-
-pub trait ToHex {
-    /// 转换为16进制字符串
-    fn to_hex(&self) -> String;
 }
 
 impl ToBase64 for SimpleHash {
