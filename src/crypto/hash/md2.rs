@@ -1,5 +1,6 @@
 use base64ct::Base64;
 use base64ct::Encoding;
+use hex::decode;
 use hex::encode;
 use md2::Digest;
 use md2::Md2;
@@ -31,6 +32,19 @@ impl MD2Hash {
         let hasher = Md2::new();
         let value = hash_with_salt_iter(hasher, source, salt, times);
         Self { value }
+    }
+
+    pub fn from_base64(source: &str) -> Result<Self, base64ct::Error> {
+        const BUF_SIZE: usize = 128;
+        let mut dst = [0u8; BUF_SIZE];
+        let value = Base64::decode(source, &mut dst)?;
+        let value = value.to_vec();
+        Ok(Self { value })
+    }
+
+    pub fn from_hex(source: &str) -> Result<Self, hex::FromHexError> {
+        let value = decode(source)?;
+        Ok(Self { value })
     }
 }
 
