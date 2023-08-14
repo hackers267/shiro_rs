@@ -2,4 +2,5 @@
 
 mod crypto;
 
+pub use crypto::hash;
 pub use crypto::simple_hash;
