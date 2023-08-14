@@ -1,11 +1,6 @@
 use sha2::Digest;
 
-pub(crate) fn hash<T>(
-    mut hasher: T,
-    source: &str,
-    salt: Option<&str>,
-    times: Option<usize>,
-) -> Vec<u8>
+fn hash<T>(mut hasher: T, source: &str, salt: Option<&str>, times: Option<usize>) -> Vec<u8>
 where
     T: Digest + Clone,
 {
@@ -23,4 +18,25 @@ where
         hashed = hasher.finalize();
     }
     hashed.to_vec()
+}
+
+pub(crate) fn simple_hash<T>(hasher: T, source: &str) -> Vec<u8>
+where
+    T: Digest + Clone,
+{
+    hash(hasher, source, None, None)
+}
+
+pub(crate) fn hash_with_salt<T>(hahser: T, source: &str, salt: &str) -> Vec<u8>
+where
+    T: Digest + Clone,
+{
+    hash(hahser, source, Some(salt), None)
+}
+
+pub(crate) fn hash_with_salt_iter<T>(hasher: T, source: &str, salt: &str, times: usize) -> Vec<u8>
+where
+    T: Digest + Clone,
+{
+    hash(hasher, source, Some(salt), Some(times))
 }

@@ -7,7 +7,10 @@ use md2::Md2;
 use crate::simple_hash::ToBase64;
 use crate::simple_hash::ToHex;
 
-use super::utils::hash;
+use super::utils::hash_with_salt;
+use super::utils::hash_with_salt_iter;
+use super::utils::simple_hash;
+
 pub struct MD2Hash {
     value: Vec<u8>,
 }
@@ -15,19 +18,19 @@ pub struct MD2Hash {
 impl MD2Hash {
     pub fn simple(source: &str) -> Self {
         let hasher = Md2::new();
-        let value = hash(hasher, source, None, None);
+        let value = simple_hash(hasher, source);
         Self { value }
     }
 
     pub fn with_salt(source: &str, salt: &str) -> Self {
         let hasher = Md2::new();
-        let value = hash(hasher, source, Some(salt), None);
+        let value = hash_with_salt(hasher, source, salt);
         Self { value }
     }
 
     pub fn with_salt_iter(source: &str, salt: &str, times: usize) -> Self {
         let hasher = Md2::new();
-        let value = hash(hasher, source, Some(salt), Some(times));
+        let value = hash_with_salt_iter(hasher, source, salt, times);
         Self { value }
     }
 }

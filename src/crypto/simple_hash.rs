@@ -6,6 +6,8 @@ use md5::Md5;
 use sha1::Sha1;
 use sha2::{Digest, Sha224, Sha256, Sha384, Sha512};
 
+use super::utils::{hash_with_salt, hash_with_salt_iter, simple_hash};
+
 /// SimpleHash支持的算法
 pub enum Algorithm {
     MD2,
@@ -156,46 +158,28 @@ impl SimpleHash {
         }
     }
 
-    fn hash<T>(mut hasher: T, source: &str, salt: Option<&str>, times: Option<usize>) -> Self
-    where
-        T: Digest + Clone,
-    {
-        let hasher_bak = hasher.clone();
-        if let Some(salt) = salt {
-            hasher.update(salt);
-        }
-        hasher.update(source);
-        let mut hashed = hasher.finalize();
-        let times = times.unwrap_or(1);
-        let range = 1..times;
-        for _i in range {
-            let mut hasher = hasher_bak.clone();
-            hasher.update(hashed);
-            hashed = hasher.finalize();
-        }
-        let value = hashed.as_slice().to_vec();
-        Self { value }
-    }
-
     fn hash_salt<T>(hasher: T, source: &str, salt: &str) -> Self
     where
         T: Digest + Clone,
     {
-        Self::hash(hasher, source, Some(salt), None)
+        let value = hash_with_salt(hasher, source, salt);
+        Self { value }
     }
 
     fn hash_simple<T>(hasher: T, source: &str) -> Self
     where
         T: Digest + Clone,
     {
-        Self::hash(hasher, source, None, None)
+        let value = simple_hash(hasher, source);
+        Self { value }
     }
 
     fn hash_salt_iter<T>(hasher: T, source: &str, salt: &str, times: usize) -> Self
     where
         T: Digest + Clone,
     {
-        Self::hash(hasher, source, Some(salt), Some(times))
+        let value = hash_with_salt_iter(hasher, source, salt, times);
+        Self { value }
     }
 }
 
